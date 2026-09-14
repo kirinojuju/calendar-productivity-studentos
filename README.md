@@ -1,14 +1,14 @@
 # Calendar Productivity — StudentOS
 
-> A student-focused productivity system for managing schedules, academic tasks, deadlines, and daily planning.
+> A student-focused productivity and personal management system for organizing schedules, academic tasks, finances, goals, and daily student life.
 
 ## 📌 About the Project
 
-**Calendar Productivity** is a core module of **StudentOS**, a long-term portfolio project designed to grow alongside my journey in Software Engineering, Networking, Cloud, and Infrastructure Engineering.
+**Calendar Productivity — StudentOS** is my long-term portfolio project designed to grow alongside my journey in Software Engineering, Networking, Cloud, and Infrastructure Engineering.
 
-The goal of this module is to create a practical productivity system that helps students organize their academic life in one place.
+StudentOS aims to bring important parts of student life into one system instead of separating schedules, assignments, finances, notes, and personal goals across multiple applications.
 
-Instead of building every feature at once, the project follows an iterative engineering approach:
+The project follows an iterative engineering approach:
 
 **Requirements → User Stories → Wireframes → Architecture → Database Design → MVP → Infrastructure → Production**
 
@@ -16,28 +16,29 @@ Instead of building every feature at once, the project follows an iterative engi
 
 ## 🎯 Project Goals
 
-Calendar Productivity aims to help students:
+StudentOS aims to help students:
 
 * Organize class schedules
 * Track assignments and deadlines
 * Plan daily and weekly activities
-* Understand upcoming workload
-* Reduce missed academic tasks
-* Manage academic responsibilities from a single dashboard
-
-The project will begin as a simple application and gradually evolve into a production-ready system.
+* Manage personal finances
+* Control daily spending
+* Set and track saving goals
+* Understand upcoming academic workload
+* Manage student life from a unified dashboard
 
 ---
 
-## 🧩 Planned Core Features
+## 🧩 Core Modules
 
-### 📅 Calendar
+### 📅 Calendar & Productivity
 
 * Daily calendar
 * Weekly calendar
 * Class schedules
 * Academic events
 * Personal events
+* Daily planning
 
 ### ✅ Task Management
 
@@ -57,39 +58,94 @@ DONE
 
 ### 🎓 Course Management
 
-Students will be able to manage information about their courses, including:
-
 * Course name
 * Course code
 * Class schedule
 * Classroom/location
 * Related assignments
 
-### 🏠 Productivity Dashboard
+### 💰 Finance Management
 
-The dashboard will provide a quick overview of:
+StudentOS will include a personal finance module designed around student life.
+
+Planned features include:
+
+* Monthly budget
+* Income tracking
+* Expense tracking
+* Expense categories
+* Remaining balance
+* Saving goals
+* Daily spending allowance
+* Monthly financial summary
+
+One important feature is the **Daily Spending Calculator**.
+
+For example:
 
 ```text
-Today's Classes
-Upcoming Deadlines
-Pending Tasks
-Completed Tasks
-Weekly Schedule
+Available Money       = 10,000 THB
+Saving Goal           = 3,000 THB
+Spendable Money       = 7,000 THB
+Days Remaining        = 20
+
+Daily Spending Budget = 350 THB/day
+```
+
+When a new expense is recorded, StudentOS can recalculate the recommended daily budget based on the remaining money and remaining days.
+
+### 🎯 Saving Goals
+
+Students can create saving goals such as:
+
+```text
+New Laptop
+Target: 50,000 THB
+
+Current Savings: 20,000 THB
+Progress: 40%
+```
+
+Future versions may connect saving goals with the gamification system.
+
+### 🏠 Student Dashboard
+
+The dashboard will combine information from multiple StudentOS modules.
+
+```text
+┌─────────────────────────────────────────────┐
+│              STUDENT OS                     │
+├──────────────────────┬──────────────────────┤
+│ Today's Schedule     │ Upcoming Tasks       │
+│                      │                      │
+│ 09:00 Network        │ Network Lab    1 day │
+│ 13:00 OOP            │ OOP Project    3 days│
+├──────────────────────┼──────────────────────┤
+│ Finance              │ Saving Goal          │
+│                      │                      │
+│ Balance: ฿7,000      │ Laptop               │
+│ Today: ฿350          │ ███████░░░ 70%       │
+├──────────────────────┴──────────────────────┤
+│              Weekly Overview                │
+└─────────────────────────────────────────────┘
 ```
 
 ---
 
 ## 👤 Target Users
 
-The initial target user is a university student who needs a simple way to manage:
+The initial target user is a university student who wants to manage:
 
 * Classes
 * Assignments
 * Deadlines
 * Personal schedules
 * Academic workload
+* Daily expenses
+* Monthly budgets
+* Saving goals
 
-The first version will focus on solving real student productivity problems before expanding to more users and features.
+The first version will focus on solving real student problems before expanding to a larger user base.
 
 ---
 
@@ -107,9 +163,17 @@ The first version will focus on solving real student productivity problems befor
 
 > As a student, I want to see my classes and tasks for today so that I know what I need to focus on.
 
-### Course Organization
+### Finance Management
 
-> As a student, I want tasks to be associated with courses so that my academic work stays organized.
+> As a student, I want to record my expenses so that I can understand where my money is being spent.
+
+### Daily Spending
+
+> As a student, I want StudentOS to calculate how much money I can safely spend each day so that my budget lasts until the end of the month.
+
+### Saving Goals
+
+> As a student, I want to set saving goals and track my progress so that I can manage my long-term financial goals.
 
 ---
 
@@ -132,50 +196,47 @@ The initial architecture is planned as a **Modular Monolith**.
                     │  Calendar         │
                     │  Courses          │
                     │  Tasks            │
+                    │  Finance          │
                     │  Dashboard        │
                     └─────────┬─────────┘
                               │
                     ┌─────────▼─────────┐
                     │    PostgreSQL     │
-                    │     Database      │
                     └───────────────────┘
 ```
 
-A Modular Monolith is intentionally chosen for the early stages of the project to keep development and deployment manageable while maintaining clear module boundaries.
+A Modular Monolith is intentionally chosen for the early stages to keep development and deployment manageable while maintaining clear module boundaries.
 
-Microservices will only be considered if future requirements justify the additional complexity.
+Microservices will only be considered when future requirements justify the additional complexity.
 
 ---
 
-## 🗄️ Initial Data Model
-
-The initial domain model may include:
+## 🗄️ Initial Domain Model
 
 ```text
 User
- │
- ├── Semester
- │     │
- │     └── Course
- │            │
- │            ├── ClassSchedule
- │            │
- │            └── Task
- │
- └── PersonalEvent
+│
+├── Semester
+│   └── Course
+│       ├── ClassSchedule
+│       └── Task
+│
+├── PersonalEvent
+│
+└── Finance
+    ├── Budget
+    │   └── Expense
+    │
+    └── SavingGoal
 ```
 
-This model is preliminary and will evolve during the database design phase.
+The data model is preliminary and will evolve during the database design phase.
 
 ---
 
 ## 🛠️ Technology Stack
 
 The technology stack is intentionally not finalized yet.
-
-Technology choices will be made based on project requirements rather than adding technologies only for portfolio purposes.
-
-Possible future technologies include:
 
 ```text
 Frontend        → TBD
@@ -188,49 +249,35 @@ Orchestration   → Kubernetes
 CI/CD           → TBD
 ```
 
+Technologies will be introduced when they solve a real engineering problem rather than simply being added for portfolio purposes.
+
 ---
 
 ## 🚀 Infrastructure Evolution
 
-One of the main purposes of StudentOS is to connect software development with infrastructure engineering.
-
-The infrastructure will evolve gradually.
-
 ```text
 Local Development
-        │
-        ▼
+        ↓
 Linux Environment
-        │
-        ▼
+        ↓
 Git / GitHub
-        │
-        ▼
+        ↓
 Docker
-        │
-        ▼
+        ↓
 Reverse Proxy
-        │
-        ▼
+        ↓
 CI/CD
-        │
-        ▼
+        ↓
 AWS
-        │
-        ▼
+        ↓
 Terraform
-        │
-        ▼
+        ↓
 Monitoring & Logging
-        │
-        ▼
+        ↓
 Kubernetes
-        │
-        ▼
+        ↓
 Production-ready Infrastructure
 ```
-
-Each technology will be introduced when there is an engineering reason to use it.
 
 ---
 
@@ -260,7 +307,11 @@ Each technology will be introduced when there is an engineering reason to use it
 * [ ] Class schedule
 * [ ] Task management
 * [ ] Deadline tracking
-* [ ] Daily dashboard
+* [ ] Finance tracking
+* [ ] Monthly budget
+* [ ] Daily spending calculation
+* [ ] Saving goals
+* [ ] Student dashboard
 
 ### Phase 3 — Infrastructure
 
@@ -292,20 +343,22 @@ Each technology will be introduced when there is an engineering reason to use it
 
 ## 🌱 StudentOS Vision
 
-Calendar Productivity is intended to become one part of the larger **StudentOS ecosystem**.
-
-Future StudentOS modules may include:
+StudentOS is designed to eventually become a collection of connected student-focused modules.
 
 ```text
 StudentOS
 │
-├── Calendar & Productivity
-├── Academic Management
-├── Finance
-├── Notes / Knowledge
-├── Project & Skill Tracking
-└── Infrastructure Platform
+├── 📅 Calendar & Productivity
+├── 🎓 Academic Management
+├── ✅ Tasks & Deadlines
+├── 💰 Finance
+├── 📝 Notes & Knowledge
+├── 🎯 Goals
+├── 📊 Progress Tracking
+└── ⚙️ Infrastructure Platform
 ```
+
+Possible future capabilities include notifications, gamification, achievements, saving points, leaderboards, analytics, and other modules based on actual user needs.
 
 The long-term objective is not only to build an application, but also to understand how a real system is:
 
@@ -320,19 +373,19 @@ Current Stage: Requirement Discovery
 Status: 🟡 In Development
 ```
 
-The project is currently focused on requirements and system design.
+StudentOS is currently focused on requirements and system design.
 
 Implementation will begin after the MVP requirements and architecture have been clearly defined.
 
 ---
 
-## 📚 What I Want to Learn
+## 📚 Learning Objectives
 
-This project is also a practical environment for developing skills in:
+StudentOS will serve as a practical environment for developing skills in:
 
 * Software Architecture
-* Backend Development
 * Frontend Development
+* Backend Development
 * Database Design
 * Linux
 * Computer Networking
@@ -348,11 +401,10 @@ This project is also a practical environment for developing skills in:
 
 ## 📄 Documentation
 
-As the project evolves, technical documentation will be added for:
-
 ```text
 docs/
 ├── requirements/
+├── user-stories/
 ├── architecture/
 ├── database/
 ├── api/
@@ -361,13 +413,11 @@ docs/
 └── decisions/
 ```
 
-Architecture decisions may also be documented using **Architecture Decision Records (ADR)**.
+Architecture decisions may be documented using **Architecture Decision Records (ADR)**.
 
 ---
 
 ## 🤝 Development Philosophy
-
-StudentOS follows several engineering principles:
 
 **Understand the problem before writing code.**
 
