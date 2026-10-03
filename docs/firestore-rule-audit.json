@@ -1,0 +1,12 @@
+{
+  "score": 4,
+  "summary": "The rules restrict workspace reads and writes to the authenticated UID, validate all top-level fields on both create and update, enforce a size cap and sequential versions, and deny all other paths. A client can still put malformed JSON inside its own private payload because rules cannot validate the contents of a JSON string. Live emulator and cross-account checks remain pending.",
+  "findings": [
+    {
+      "check": "Business Logic vs. Rules",
+      "severity": "minor",
+      "issue": "The owner may save malformed JSON inside its own payload, which can make that owner's workspace unreadable in the app.",
+      "recommendation": "Split the workspace into typed item documents as the app grows, then validate each item's fields in rules. Until then, keep client-side validation and a recovery path for invalid owner data."
+    }
+  ]
+}

@@ -14,7 +14,8 @@ export default function AppRoutes() {
       <Route index element={<TodayPage />} />
       <Route path="calendar" element={<CalendarPage />} />
       <Route path="tasks" element={<TasksPage />} />
-      <Route path="academic" element={<AcademicPage />} />
+      <Route path="courses" element={<AcademicPage />} />
+      <Route path="academic" element={<Navigate to="/courses" replace />} />
       <Route path="finance" element={<FinancePage />} />
       <Route path="notes" element={<NotesPage />} />
     </Route>

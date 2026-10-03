@@ -1,0 +1,9 @@
+# Firestore rules review notes
+
+StudentOS uses the Firebase Web SDK. Firebase Authentication email/password identifies each user by `uid`. The application reads and writes only `workspaces/{uid}`. There are no collection queries, filters, ordering, or list operations. Each user owns one private workspace document. The UI currently edits the entire workspace and checks a monotonically increasing version before saving.
+
+The document fields are `uid` (required immutable string equal to the document ID and authenticated UID), `version` (required nonnegative integer; starts at zero and increments by one), `payload` (required JSON string, at most 750,000 characters in rules and 750,000 UTF-8 bytes in the client), and `updatedAt` (required server timestamp). The JSON string contains arrays for courses, routine, tasks, events, and notes, plus a finance object with transactions. The client validates this shape before saving and after reading. Firestore rules cannot inspect JSON inside a string, so the rules protect ownership, field types, version progression, and size; they do not validate the nested workspace contents.
+
+Allowed operations: an authenticated owner may get their document, create it once at version zero, and update it at the next version. Listing and deletion are not needed. All other paths and operations are denied. There is no public profile or shared data.
+
+Attack review: a user must not read or write another UID's path, create a document claiming another UID, change their UID on update, add extra fields, skip or reset the version, submit an oversized payload, set an arbitrary update time, delete another user's data, or list users. The owner can deliberately put invalid JSON in their own private payload through a custom client; the application rejects such content on load. Before production use, review this tradeoff and consider item-level documents with stricter field validation as the data model grows.

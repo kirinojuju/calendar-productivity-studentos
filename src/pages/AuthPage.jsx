@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-export default function AuthPage({ onSubmit }) {
+export default function AuthPage({ onSubmit, onPreview }) {
   const [mode, setMode] = useState('login')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -29,6 +29,8 @@ export default function AuthPage({ onSubmit }) {
         <button type="submit" className="auth-submit" disabled={busy}>{busy ? 'Please wait…' : mode === 'login' ? 'Sign in' : 'Create account'}</button>
       </form>
       <button className="auth-switch" type="button" onClick={() => { setMode(mode === 'login' ? 'register' : 'login'); setError('') }}>{mode === 'login' ? 'New here? Create an account' : 'Already have an account? Sign in'}</button>
+      <button className="auth-preview" type="button" onClick={onPreview}>Preview on this device</button>
+      <p className="auth-preview-hint">Preview data stays in this browser until you import it into an account.</p>
     </div>
   </main>
 }

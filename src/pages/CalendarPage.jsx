@@ -1,5 +1,5 @@
 import { useMemo, useRef, useState } from 'react'
-import { Link, useOutletContext } from 'react-router'
+import { Link, useNavigate, useOutletContext } from 'react-router'
 import CalendarMonth from '../components/CalendarMonth.jsx'
 import Icon from '../components/Icon.jsx'
 import { useWorkspace } from '../context/WorkspaceContext.jsx'
@@ -24,6 +24,7 @@ function EventEditor({ event, date, onSave, onDelete, onClose }) {
 }
 
 export default function CalendarPage() {
+  const navigateTo = useNavigate()
   const { selectedDate, setSelectedDate } = useOutletContext()
   const { workspace, actions } = useWorkspace()
   const [view, setView] = useState('month')
@@ -58,7 +59,8 @@ export default function CalendarPage() {
   }
   function clickEvent(event) {
     if (suppressClick.current) { suppressClick.current = false; return }
-    if (event.kind !== 'class') setEditing(event)
+    if (event.kind === 'class') navigateTo(`/courses?edit=${encodeURIComponent(event.courseId)}`)
+    else setEditing(event)
   }
   function pointerStart(e, id) {
     if (e.pointerType === 'mouse' && e.button !== 0) return
@@ -79,10 +81,10 @@ export default function CalendarPage() {
     <div className="calendar-toolbar"><div className="toolbar-left"><button className="secondary-button" onClick={() => { setSelectedDate(today); setMonth(today) }}>Today</button><button className="plain-icon" aria-label="Previous period" onClick={() => navigate(-1)}><Icon name="left" /></button><button className="plain-icon" aria-label="Next period" onClick={() => navigate(1)}><Icon name="right" /></button><strong>{view === 'month' ? new Intl.DateTimeFormat('en-US', { month: 'long', year: 'numeric' }).format(fromDateKey(month)) : view === 'week' ? `Week of ${shortDate(weekStart)}` : shortDate(selectedDate)}</strong></div><div className="view-switch" role="group" aria-label="Calendar view">{['month', 'week', 'day'].map(option => <button key={option} className={view === option ? 'active' : ''} onClick={() => setView(option)}>{option}</button>)}</div></div>
     <div className="calendar-filters">{types.map(type => <label key={type.id}><input type="checkbox" checked={visible.includes(type.id)} onChange={() => setVisible(current => current.includes(type.id) ? current.filter(item => item !== type.id) : [...current, type.id])} /><span className={`filter-dot ${type.id}`} />{type.label}</label>)}<span className="drag-hint">Drag an appointment to another day, or edit its date.</span></div>
     {status && <p className="inline-status" role="status">{status}</p>}
-    {view === 'month' ? <CalendarMonth month={month} selectedDate={selectedDate} onSelectDate={selectDay} events={shownEvents} onMoveEvent={moveEvent} onEventClick={clickEvent} onPointerStart={pointerStart} onPointerEnd={pointerEnd} /> : <div className={`schedule-grid ${view}`}>
+    {view === 'month' ? <CalendarMonth month={month} selectedDate={selectedDate} onSelectDate={selectDay} events={shownEvents} groupClasses onMoveEvent={moveEvent} onEventClick={clickEvent} onPointerStart={pointerStart} onPointerEnd={pointerEnd} /> : <div className={`schedule-grid ${view}`}>
       {viewDays.map(day => <section key={day} data-calendar-date={day} className={`schedule-day ${day === today ? 'is-today' : ''}`} onDragOver={e => { if (e.dataTransfer.types.includes('text/studentos-event')) e.preventDefault() }} onDrop={e => dropOnDay(e, day)}><button className="schedule-day-heading" onClick={() => { setSelectedDate(day); setView('day') }}>{shortDate(day)}</button><div className="schedule-items">{shownEvents.filter(event => event.date === day).sort((a, b) => a.start.localeCompare(b.start)).map(event => <button key={event.id} className={`schedule-event ${event.kind}`} draggable={event.kind !== 'class'} onDragStart={e => { if (event.kind !== 'class') e.dataTransfer.setData('text/studentos-event', event.id) }} onPointerDown={e => event.kind !== 'class' && pointerStart(e, event.id)} onPointerUp={e => event.kind !== 'class' && pointerEnd(e)} onClick={() => clickEvent(event)}><span>{event.start}–{event.end}</span><strong>{event.title}</strong>{event.location && <small>{event.location}</small>}</button>)}{!shownEvents.some(event => event.date === day) && <span className="empty-day">No events</span>}</div></section>)}
     </div>}
-    <p className="calendar-footnote">Class times come from <Link to="/academic">Academic</Link>. Dragging changes saved appointments and reminders; class schedules stay with their courses.</p>
+    <p className="calendar-footnote">Month view groups busy class days. Open a day to see each class time; select a class to edit its weekly schedule in <Link to="/courses">Courses</Link>.</p>
     {(creating || editing) && <EventEditor key={editing?.id || 'new'} event={editing} date={selectedDate} onSave={saveEvent} onClose={() => { setEditing(null); setCreating(false) }} onDelete={() => { actions.deleteEvent(editing.id); setEditing(null); setStatus('Event deleted.') }} />}
   </div>
 }

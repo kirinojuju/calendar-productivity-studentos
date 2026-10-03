@@ -5,7 +5,21 @@ dist/
 .env
 .env.*
 !.env.example
+.firebaserc
 .docker-local/
 .npm-cache/
 backups/
 .DS_Store
+
+# Local artwork stays on this device.
+assets_ai_assistance/
+src/components/logo/
+public/
+docs/release-checklist.md
+*.png
+*.jpg
+*.jpeg
+*.webp
+*.gif
+*.svg
+*.ico

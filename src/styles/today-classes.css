@@ -1,0 +1,73 @@
+.today-classes {
+  border: 1px solid #e9e9e7;
+  border-radius: 10px;
+  background: #fff;
+  padding: 18px 20px;
+}
+
+.today-classes-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 14px;
+}
+
+.today-classes-eyebrow {
+  color: #9b9a97;
+  font-size: 11px;
+  font-weight: 650;
+  letter-spacing: .07em;
+}
+
+.today-classes h2 {
+  margin: 2px 0 0;
+  color: #37352f;
+  font-size: 18px;
+  font-weight: 650;
+  line-height: 1.3;
+}
+
+.today-classes a {
+  color: #b95e42;
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.today-classes a:hover { text-decoration: underline; }
+
+.today-class-list { display: grid; gap: 8px; }
+
+.today-class {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  border-radius: 7px;
+  background: #f7f7f5;
+  padding: 11px 13px;
+}
+
+.today-class-color { align-self: stretch; width: 4px; min-height: 38px; border-radius: 4px; flex: none; }
+.today-class-color.orange { background: #ef7651; }
+.today-class-color.blue { background: #77a6c4; }
+.today-class-color.green { background: #75b991; }
+.today-class-color.purple { background: #a783c3; }
+
+.today-class-info { display: grid; gap: 2px; min-width: 0; flex: 1; }
+.today-class-info strong { overflow: hidden; color: #37352f; font-size: 14px; font-weight: 600; text-overflow: ellipsis; white-space: nowrap; }
+.today-class-info span { color: #787774; font-size: 12px; }
+.today-class-time { color: #56554f; font-size: 13px; font-weight: 600; white-space: nowrap; }
+
+.today-classes-empty { display: flex; flex-wrap: wrap; align-items: center; gap: 5px 12px; padding: 10px 0 2px; }
+.today-classes-empty p { margin: 0; color: #787774; font-size: 13px; }
+
+@media (max-width: 560px) {
+  .today-classes { padding: 15px; }
+  .today-classes-heading { align-items: flex-start; flex-wrap: wrap; gap: 6px 12px; }
+  .today-class { gap: 9px; padding: 10px; }
+  .today-class-info strong { white-space: normal; }
+  .today-class-time { font-size: 12px; }
+}

@@ -36,7 +36,7 @@ export function monthCells(value) {
 
 export function courseSessions(courses, date) {
   const weekday = fromDateKey(date).getDay()
-  return courses.flatMap(course => (course.schedule || [])
+  return courses.flatMap(course => (course.startDate && date < course.startDate) || (course.endDate && date > course.endDate) ? [] : (course.schedule || [])
     .filter(slot => slot.day === weekday)
     .map(slot => ({ id: `${course.id}-${date}-${slot.start}`, title: course.name, date, start: slot.start, end: slot.end, location: slot.room, kind: 'class', courseId: course.id })))
 }

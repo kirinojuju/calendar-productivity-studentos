@@ -1,24 +1,12 @@
 import { createContext, useContext, useEffect, useMemo, useRef, useState } from 'react'
-import { loadWorkspace, WORKSPACE_KEY } from '../data/workspace.js'
+import { createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signOut } from 'firebase/auth'
+import { loadWorkspace, validateWorkspace, WORKSPACE_KEY } from '../data/workspace.js'
 import AuthPage from '../pages/AuthPage.jsx'
+import { auth } from '../services/firebase.js'
+import { readWorkspace, saveWorkspace, WorkspaceConflictError } from '../services/workspace.js'
 
 const WorkspaceContext = createContext(null)
 const makeId = () => globalThis.crypto?.randomUUID?.() || `item-${Date.now()}-${Math.random().toString(36).slice(2)}`
-
-async function api(path, options = {}) {
-  const response = await fetch(path, {
-    credentials: 'same-origin',
-    ...options,
-    headers: { 'Content-Type': 'application/json', 'X-StudentOS-Request': '1', ...options.headers },
-  })
-  const data = await response.json().catch(() => ({}))
-  if (!response.ok) {
-    const error = new Error(data.error || 'Could not reach the server.')
-    error.status = response.status
-    throw error
-  }
-  return data
-}
 
 export function WorkspaceProvider({ children }) {
   const [workspace, setWorkspace] = useState(null)
@@ -28,35 +16,51 @@ export function WorkspaceProvider({ children }) {
   const [saveStatus, setSaveStatus] = useState('saved')
   const [hasLocalData, setHasLocalData] = useState(() => !!localStorage.getItem(WORKSPACE_KEY))
   const versionRef = useRef(0)
+  const userRef = useRef(null)
   const pendingRef = useRef(null)
   const savePromiseRef = useRef(null)
   const timerRef = useRef(null)
   const skipNextSaveRef = useRef(false)
-  const bootstrappedRef = useRef(false)
+  const previewRef = useRef(false)
+  const loadTokenRef = useRef(0)
 
-  async function loadAccount() {
+  async function loadAccount(firebaseUser = auth.currentUser) {
+    const token = ++loadTokenRef.current
+    if (!firebaseUser) {
+      userRef.current = null
+      setWorkspace(null)
+      setUser(null)
+      setPhase('guest')
+      return
+    }
     setPhase('loading')
     setAuthError('')
     try {
-      const session = await api('/api/session')
-      const data = await api('/api/workspace')
+      const data = await readWorkspace(firebaseUser.uid)
+      if (token !== loadTokenRef.current || previewRef.current) return
       versionRef.current = data.version
+      userRef.current = firebaseUser.uid
       pendingRef.current = null
       skipNextSaveRef.current = true
       setWorkspace(data.workspace)
-      setUser(session.user)
+      setUser({ id: firebaseUser.uid, email: firebaseUser.email || 'Your account' })
       setSaveStatus('saved')
       setPhase('ready')
     } catch (error) {
-      setPhase(error.status === 401 ? 'guest' : 'error')
-      if (error.status !== 401) setAuthError(error.message)
+      if (token !== loadTokenRef.current || previewRef.current) return
+      setAuthError(error.message)
+      setPhase('error')
     }
   }
 
   useEffect(() => {
-    if (bootstrappedRef.current) return
-    bootstrappedRef.current = true
-    loadAccount()
+    const unsubscribe = onAuthStateChanged(auth, current => {
+      if (!previewRef.current) loadAccount(current)
+    }, error => {
+      setAuthError(error.message)
+      setPhase('error')
+    })
+    return () => { loadTokenRef.current++; unsubscribe() }
   }, [])
 
   function flush() {
@@ -67,12 +71,11 @@ export function WorkspaceProvider({ children }) {
         pendingRef.current = null
         setSaveStatus('saving')
         try {
-          const result = await api('/api/workspace', { method: 'PUT', body: JSON.stringify({ version: versionRef.current, workspace: draft }) })
-          versionRef.current = result.version
+          versionRef.current = await saveWorkspace(userRef.current, versionRef.current, draft)
           setSaveStatus(pendingRef.current ? 'saving' : 'saved')
         } catch (error) {
           if (!pendingRef.current) pendingRef.current = draft
-          setSaveStatus(error.status === 409 ? 'conflict' : 'error')
+          setSaveStatus(error instanceof WorkspaceConflictError ? 'conflict' : 'error')
           throw error
         }
       }
@@ -104,27 +107,27 @@ export function WorkspaceProvider({ children }) {
   }, [saveStatus])
 
   async function authenticate(mode, email, password) {
-    const data = await api(`/api/auth/${mode}`, { method: 'POST', body: JSON.stringify({ email, password }) })
-    const saved = await api('/api/workspace')
-    versionRef.current = saved.version
-    pendingRef.current = null
-    skipNextSaveRef.current = true
-    setWorkspace(saved.workspace)
-    setUser(data.user)
-    setSaveStatus('saved')
-    setPhase('ready')
+    try {
+      if (mode === 'register') await createUserWithEmailAndPassword(auth, email, password)
+      else await signInWithEmailAndPassword(auth, email, password)
+    } catch (error) {
+      if (error.code === 'auth/email-already-in-use') throw new Error('This email is already registered.')
+      if (['auth/invalid-credential', 'auth/user-not-found', 'auth/wrong-password'].includes(error.code)) throw new Error('Incorrect email or password.')
+      if (error.code === 'auth/weak-password') throw new Error('Choose a stronger password.')
+      throw error
+    }
   }
 
   async function logout() {
     if (phase === 'demo') {
-      setPhase('guest')
-      setWorkspace(null)
-      setUser(null)
+      previewRef.current = false
+      await loadAccount()
       return
     }
     clearTimeout(timerRef.current)
     if (pendingRef.current || savePromiseRef.current) await flush()
-    await api('/api/auth/logout', { method: 'POST', body: '{}' })
+    await signOut(auth)
+    userRef.current = null
     setWorkspace(null)
     setUser(null)
     setPhase('guest')
@@ -133,14 +136,14 @@ export function WorkspaceProvider({ children }) {
   function importLocal() {
     try {
       const saved = JSON.parse(localStorage.getItem(WORKSPACE_KEY))
-      if (!saved || !Array.isArray(saved.tasks) || !Array.isArray(saved.events) || !saved.finance) throw new Error('No valid local workspace found.')
+      if (!validateWorkspace(saved)) throw new Error('No valid local workspace found.')
       setWorkspace(saved)
       setHasLocalData(false)
-    } catch (error) { setAuthError(error.message) }
+    } catch (error) { window.alert(error.message) }
   }
 
   async function reloadWorkspace() {
-    const data = await api('/api/workspace')
+    const data = await readWorkspace(userRef.current)
     versionRef.current = data.version
     pendingRef.current = null
     skipNextSaveRef.current = true
@@ -149,6 +152,8 @@ export function WorkspaceProvider({ children }) {
   }
 
   function previewLocally() {
+    previewRef.current = true
+    loadTokenRef.current++
     setWorkspace(loadWorkspace())
     setUser({ email: 'Local preview' })
     setSaveStatus('local')
@@ -162,7 +167,7 @@ export function WorkspaceProvider({ children }) {
     addTask(task) { setWorkspace(current => ({ ...current, tasks: [...current.tasks, { id: makeId(), status: 'todo', priority: 'medium', important: false, importantPoint: '', dueDate: '', courseId: '', project: '', ...task }] })) },
     updateTask(id, patch) { setWorkspace(current => ({ ...current, tasks: current.tasks.map(task => task.id === id ? { ...task, ...patch } : task) })) },
     deleteTask(id) { setWorkspace(current => ({ ...current, tasks: current.tasks.filter(task => task.id !== id) })) },
-    addCourse(course) { setWorkspace(current => ({ ...current, courses: [...current.courses, { id: makeId(), ...course }] })) },
+    addCourse(course) { const id = makeId(); setWorkspace(current => ({ ...current, courses: [...current.courses, { id, ...course }] })); return id },
     updateCourse(id, patch) { setWorkspace(current => ({ ...current, courses: current.courses.map(course => course.id === id ? { ...course, ...patch } : course) })) },
     deleteCourse(id) { setWorkspace(current => ({ ...current, courses: current.courses.filter(course => course.id !== id), tasks: current.tasks.map(task => task.courseId === id ? { ...task, courseId: '' } : task) })) },
     addEvent(event) { setWorkspace(current => ({ ...current, events: [...current.events, { id: makeId(), reminderMinutes: 0, location: '', notes: '', ...event }] })) },
@@ -173,12 +178,13 @@ export function WorkspaceProvider({ children }) {
     deleteTransaction(id) { setWorkspace(current => ({ ...current, finance: { ...current.finance, transactions: current.finance.transactions.filter(transaction => transaction.id !== id) } })) },
     addNote() { const id = makeId(); setWorkspace(current => ({ ...current, notes: [{ id, title: 'Untitled', updatedAt: new Date().toISOString().slice(0, 10), blocks: [] }, ...current.notes] })); return id },
     updateNote(id, patch) { setWorkspace(current => ({ ...current, notes: current.notes.map(note => note.id === id ? { ...note, ...patch, updatedAt: new Date().toISOString().slice(0, 10) } : note) })) },
+    updateNoteBlocks(id, updateBlocks) { setWorkspace(current => ({ ...current, notes: current.notes.map(note => note.id === id ? { ...note, blocks: updateBlocks(note.blocks), updatedAt: new Date().toISOString().slice(0, 10) } : note) })) },
     deleteNote(id) { setWorkspace(current => ({ ...current, notes: current.notes.filter(note => note.id !== id) })) },
   }), [])
 
   if (phase === 'loading') return <div className="auth-screen"><div className="auth-card">Loading your workspace…</div></div>
-  if (phase === 'error') return <div className="auth-screen"><div className="auth-card"><h1>StudentOS</h1><p>Could not connect to PostgreSQL. {authError}</p><div className="auth-actions"><button className="auth-submit" onClick={loadAccount}>Retry connection</button><button className="auth-switch" onClick={previewLocally}>Preview on this device</button></div><p className="auth-hint">Preview data stays in this browser until you import it into an account.</p></div></div>
-  if (phase === 'guest') return <AuthPage onSubmit={authenticate} />
+  if (phase === 'error') return <div className="auth-screen"><div className="auth-card"><h1>StudentOS</h1><p>Could not connect to Firebase. {authError}</p><div className="auth-actions"><button className="auth-submit" onClick={() => loadAccount()}>Retry connection</button><button className="auth-switch" onClick={previewLocally}>Preview on this device</button></div><p className="auth-hint">Preview data stays in this browser until you import it into an account.</p></div></div>
+  if (phase === 'guest') return <AuthPage onSubmit={authenticate} onPreview={previewLocally} />
 
   return <WorkspaceContext.Provider value={{ workspace, actions, user, saveStatus, isDemo: phase === 'demo', hasLocalData, importLocal, logout, retrySave: () => flush().catch(() => {}), reloadWorkspace }}>{children}</WorkspaceContext.Provider>
 }

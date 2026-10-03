@@ -1,0 +1,52 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Assumed model: workspaces/{uid} is private to the authenticated owner.
+    // Required fields: uid (immutable string), version (integer),
+    // payload (bounded JSON string), updatedAt (server timestamp).
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(uid) {
+      return isAuthenticated() && request.auth.uid == uid;
+    }
+
+    function uidUnchanged(uid) {
+      return request.resource.data.uid == uid;
+    }
+
+    function uidNotModified() {
+      return request.resource.data.uid == resource.data.uid;
+    }
+
+    function isValidWorkspace(data) {
+      return data.keys().hasAll(['uid', 'version', 'payload', 'updatedAt'])
+        && data.keys().hasOnly(['uid', 'version', 'payload', 'updatedAt'])
+        && data.uid is string
+        && data.uid.size() > 0
+        && data.uid.size() <= 128
+        && data.version is int
+        && data.version >= 0
+        && data.payload is string
+        && data.payload.size() > 0
+        && data.payload.size() <= 750000
+        && data.updatedAt is timestamp;
+    }
+
+    match /workspaces/{uid} {
+      allow get: if isOwner(uid);
+      allow create: if isOwner(uid)
+        && uidUnchanged(uid)
+        && isValidWorkspace(request.resource.data)
+        && request.resource.data.version == 0
+        && request.resource.data.updatedAt == request.time;
+      allow update: if isOwner(uid)
+        && uidNotModified()
+        && uidUnchanged(uid)
+        && isValidWorkspace(request.resource.data)
+        && request.resource.data.version == resource.data.version + 1
+        && request.resource.data.updatedAt == request.time;
+    }
+  }
+}

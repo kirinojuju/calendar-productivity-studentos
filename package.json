@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "node scripts/dev.js",
+    "dev": "vite",
     "dev:web": "vite",
     "dev:api": "node --env-file=.env server/index.js",
     "db:setup": "node scripts/setup-env.js",
@@ -20,6 +20,7 @@
     "node": ">=24.0.0"
   },
   "dependencies": {
+    "firebase": "^12.19.0",
     "pg": "^8.16.3",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
