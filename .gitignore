@@ -5,4 +5,7 @@ dist/
 .env
 .env.*
 !.env.example
+.docker-local/
+.npm-cache/
+backups/
 .DS_Store

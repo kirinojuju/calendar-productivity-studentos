@@ -4,7 +4,15 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "node scripts/dev.js",
+    "dev:web": "vite",
+    "dev:api": "node --env-file=.env server/index.js",
+    "db:setup": "node scripts/setup-env.js",
+    "db:migrate": "node --env-file=.env server/migrate.js",
+    "db:backup": "node scripts/backup.js",
+    "start": "node --env-file=.env server/index.js",
+    "test": "node --test server/*.test.js",
+    "test:integration": "node --env-file=.env scripts/integration.js",
     "build": "vite build",
     "preview": "vite preview"
   },
@@ -12,6 +20,7 @@
     "node": ">=24.0.0"
   },
   "dependencies": {
+    "pg": "^8.16.3",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
     "react-router": "^8.4.0"
