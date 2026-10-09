@@ -1,0 +1,256 @@
+/* Dark palette lives after the existing page styles so the light theme stays intact. */
+.theme-toggle { width: 30px; height: 30px; }
+.theme-toggle:focus-visible { outline: 2px solid #ed9c7f; outline-offset: 2px; }
+.auth-card { position: relative; }
+.auth-theme-toggle { position: absolute; top: 24px; right: 24px; }
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --dark-bg: #191919;
+  --dark-sidebar: #202020;
+  --dark-surface: #242424;
+  --dark-raised: #2b2b2b;
+  --dark-hover: #343434;
+  --dark-border: #3a3a3a;
+  --dark-text: #ecebe8;
+  --dark-muted: #b5b3af;
+  --dark-faint: #a19f9b;
+  --dark-accent: #f39a78;
+  background: var(--dark-bg);
+  color: var(--dark-text);
+}
+
+[data-theme='dark'] body,
+[data-theme='dark'] .app-shell,
+[data-theme='dark'] .main-panel,
+[data-theme='dark'] .main-content,
+[data-theme='dark'] .module-page { background: var(--dark-bg); color: var(--dark-text); }
+
+[data-theme='dark'] .sidebar,
+[data-theme='dark'] .right-panel { background: var(--dark-sidebar); border-color: var(--dark-border); }
+[data-theme='dark'] .sidebar .nav-item { color: var(--dark-text); }
+[data-theme='dark'] .sidebar .nav-item:hover,
+[data-theme='dark'] .sidebar .nav-item.active { background: var(--dark-hover); color: var(--dark-text); }
+[data-theme='dark'] .term-heading,
+[data-theme='dark'] .account,
+[data-theme='dark'] .account strong,
+[data-theme='dark'] .weather,
+[data-theme='dark'] .topbar-actions { color: var(--dark-muted); }
+[data-theme='dark'] .plain-icon,
+[data-theme='dark'] .icon-button { color: var(--dark-muted); }
+[data-theme='dark'] .plain-icon:hover,
+[data-theme='dark'] .icon-button:hover { background: var(--dark-hover); color: var(--dark-text); }
+[data-theme='dark'] .theme-toggle { width: 30px; height: 30px; border: 1px solid var(--dark-border); }
+[data-theme='dark'] .theme-toggle:focus-visible,
+[data-theme='dark'] .plain-icon:focus-visible { outline: 2px solid var(--dark-accent); outline-offset: 2px; }
+
+[data-theme='dark'] .today-classes,
+[data-theme='dark'] .course-list,
+[data-theme='dark'] .academic-card,
+[data-theme='dark'] .finance-card,
+[data-theme='dark'] .finance-kpi,
+[data-theme='dark'] .notes-list,
+[data-theme='dark'] .note-editor,
+[data-theme='dark'] .editor-modal,
+[data-theme='dark'] .task-card,
+[data-theme='dark'] .auth-card,
+[data-theme='dark'] .assistant-panel,
+[data-theme='dark'] .budget-editor,
+[data-theme='dark'] .small-popover,
+[data-theme='dark'] .app-notice,
+[data-theme='dark'] .search-panel,
+[data-theme='dark'] .search-results,
+[data-theme='dark'] .feature-card { background: var(--dark-surface); border-color: var(--dark-border); color: var(--dark-text); }
+
+[data-theme='dark'] .today-class,
+[data-theme='dark'] .task-column,
+[data-theme='dark'] .timetable-day,
+[data-theme='dark'] .course-time-row,
+[data-theme='dark'] .course-slot-card,
+[data-theme='dark'] .schedule-day,
+[data-theme='dark'] .finance-formula,
+[data-theme='dark'] .important-point,
+[data-theme='dark'] .task-meta span,
+[data-theme='dark'] .assistant-panel-heading { background: var(--dark-raised); border-color: var(--dark-border); color: var(--dark-text); }
+
+[data-theme='dark'] .calendar-toolbar,
+[data-theme='dark'] .task-toolbar,
+[data-theme='dark'] .quick-add,
+[data-theme='dark'] .budget-bar,
+[data-theme='dark'] .note-properties,
+[data-theme='dark'] .course-editor-section,
+[data-theme='dark'] .course-detail-grid > div,
+[data-theme='dark'] .transaction-row,
+[data-theme='dark'] .assistant-summary { border-color: var(--dark-border); }
+[data-theme='dark'] .budget-bar,
+[data-theme='dark'] .view-switch { background: var(--dark-raised); }
+[data-theme='dark'] .plan-item:has(input:disabled) .custom-check { background: var(--dark-raised); }
+
+[data-theme='dark'] input:not([type='checkbox']),
+[data-theme='dark'] select,
+[data-theme='dark'] textarea {
+  background: var(--dark-surface);
+  color: var(--dark-text);
+  border-color: var(--dark-border);
+  caret-color: var(--dark-text);
+}
+[data-theme='dark'] input::placeholder,
+[data-theme='dark'] textarea::placeholder { color: var(--dark-faint); }
+[data-theme='dark'] .note-title,
+[data-theme='dark'] .note-block .block-text-input,
+[data-theme='dark'] .note-block .block-heading-input,
+[data-theme='dark'] .note-block .block-todo-input,
+[data-theme='dark'] .quick-add input,
+[data-theme='dark'] .search-panel input { background: transparent; border-color: transparent; color: var(--dark-text); }
+[data-theme='dark'] .note-block .block-text-input:focus,
+[data-theme='dark'] .note-block .block-heading-input:focus,
+[data-theme='dark'] .note-block .block-todo-input:focus { background: var(--dark-raised); }
+[data-theme='dark'] input:focus-visible,
+[data-theme='dark'] select:focus-visible,
+[data-theme='dark'] textarea:focus-visible { outline-color: var(--dark-accent); }
+
+[data-theme='dark'] .secondary-button,
+[data-theme='dark'] .danger-button,
+[data-theme='dark'] .task-view-switch button,
+[data-theme='dark'] .view-switch button,
+[data-theme='dark'] .add-blocks button,
+[data-theme='dark'] .assistant-links a,
+[data-theme='dark'] .account-menu button,
+[data-theme='dark'] .search-results button,
+[data-theme='dark'] .routine-add button { background: var(--dark-surface); border-color: var(--dark-border); color: var(--dark-text); }
+[data-theme='dark'] .secondary-button:hover,
+[data-theme='dark'] .danger-button:hover,
+[data-theme='dark'] .task-view-switch button:hover,
+[data-theme='dark'] .assistant-links a:hover,
+[data-theme='dark'] .search-results button:hover,
+[data-theme='dark'] .account-menu button:hover { background: var(--dark-hover); }
+[data-theme='dark'] .task-view-switch button.active,
+[data-theme='dark'] .view-switch button.active,
+[data-theme='dark'] .course-list-item.active,
+[data-theme='dark'] .course-list-item:hover,
+[data-theme='dark'] .note-list-item.active,
+[data-theme='dark'] .note-list-item:hover { background: #46332d; color: var(--dark-text); }
+[data-theme='dark'] .primary-button,
+[data-theme='dark'] .auth-submit { background: var(--dark-accent); border-color: var(--dark-accent); color: #201915; }
+[data-theme='dark'] .primary-button:hover,
+[data-theme='dark'] .auth-submit:hover { background: #ffad8d; }
+[data-theme='dark'] .today-classes a,
+[data-theme='dark'] .text-button,
+[data-theme='dark'] .course-detail-grid a,
+[data-theme='dark'] .calendar-footnote a,
+[data-theme='dark'] .item-detail.accent { color: var(--dark-accent); }
+
+[data-theme='dark'] .today-classes h2,
+[data-theme='dark'] .today-class-info strong,
+[data-theme='dark'] .today-class-time,
+[data-theme='dark'] .budget-heading,
+[data-theme='dark'] .plan-item,
+[data-theme='dark'] .course-list-item strong,
+[data-theme='dark'] .note-list-item strong,
+[data-theme='dark'] .course-time-row strong,
+[data-theme='dark'] .course-slot-card-heading strong,
+[data-theme='dark'] .course-editor-section-heading strong,
+[data-theme='dark'] .insight-stats strong,
+[data-theme='dark'] .empty-note h2,
+[data-theme='dark'] .feature-card h2 { color: var(--dark-text); }
+[data-theme='dark'] .empty-agenda strong,
+[data-theme='dark'] .search-results div,
+[data-theme='dark'] .note-block textarea,
+[data-theme='dark'] .calendar-filters label,
+[data-theme='dark'] .auth-preview,
+[data-theme='dark'] .assistant-close:hover,
+[data-theme='dark'] .assistant-motion:hover { color: var(--dark-text); }
+
+[data-theme='dark'] .overview p,
+[data-theme='dark'] .module-heading p,
+[data-theme='dark'] .today-class-info span,
+[data-theme='dark'] .today-classes-empty p,
+[data-theme='dark'] .academic-card p,
+[data-theme='dark'] .course-editor-hint,
+[data-theme='dark'] .course-editor-section-heading span,
+[data-theme='dark'] .assistant-panel-heading span,
+[data-theme='dark'] .assistant-summary span,
+[data-theme='dark'] .assistant-summary small,
+[data-theme='dark'] .assistant-motion,
+[data-theme='dark'] .task-card .important-point,
+[data-theme='dark'] .insight-card > p,
+[data-theme='dark'] .editor-modal label,
+[data-theme='dark'] .finance-fields label,
+[data-theme='dark'] .transaction-form label { color: var(--dark-muted); }
+
+[data-theme='dark'] .module-hint,
+[data-theme='dark'] .calendar-footnote,
+[data-theme='dark'] .section-empty,
+[data-theme='dark'] .item-detail,
+[data-theme='dark'] .month-weekday,
+[data-theme='dark'] .day-names,
+[data-theme='dark'] .agenda-note,
+[data-theme='dark'] .event-time,
+[data-theme='dark'] .empty-column,
+[data-theme='dark'] .note-shortcuts,
+[data-theme='dark'] .assistant-ai-note,
+[data-theme='dark'] .eyebrow,
+[data-theme='dark'] .course-list-item small,
+[data-theme='dark'] .note-list-item small,
+[data-theme='dark'] .task-meta span,
+[data-theme='dark'] .timetable-session span,
+[data-theme='dark'] .timetable-session small,
+[data-theme='dark'] .no-class { color: var(--dark-muted); }
+
+[data-theme='dark'] .month-grid-full,
+[data-theme='dark'] .month-grid-full .month-weekday,
+[data-theme='dark'] .month-grid-full .month-day { border-color: var(--dark-border); }
+[data-theme='dark'] .month-grid-full .month-weekday,
+[data-theme='dark'] .month-grid-full .month-day { background: var(--dark-surface); }
+[data-theme='dark'] .month-grid-full .month-day.outside { background: #202020; }
+[data-theme='dark'] .month-grid-full .month-day.selected,
+[data-theme='dark'] .month-grid-full .month-day:hover { background: #352b27; }
+[data-theme='dark'] .month-grid-full .day-number,
+[data-theme='dark'] .month-grid-compact .day-number,
+[data-theme='dark'] .dates button { color: var(--dark-text); }
+[data-theme='dark'] .month-grid-full .outside .day-number,
+[data-theme='dark'] .month-grid-compact .outside .day-number,
+[data-theme='dark'] .dates button.outside { color: var(--dark-faint); }
+[data-theme='dark'] .month-grid-compact .selected .day-number,
+[data-theme='dark'] .dates button.selected { background: #4b352e; color: var(--dark-text); }
+[data-theme='dark'] .schedule-day.is-today { background: #352b27; }
+[data-theme='dark'] .schedule-day-heading { color: var(--dark-text); }
+
+[data-theme='dark'] .month-event,
+[data-theme='dark'] .schedule-event,
+[data-theme='dark'] .event-card { color: var(--dark-text); }
+[data-theme='dark'] .month-event.class,
+[data-theme='dark'] .month-event.class-summary,
+[data-theme='dark'] .schedule-event.class,
+[data-theme='dark'] .event-card.orange { background: #493128; }
+[data-theme='dark'] .month-event.appointment,
+[data-theme='dark'] .schedule-event.appointment,
+[data-theme='dark'] .event-card.green { background: #253d32; }
+[data-theme='dark'] .month-event.reminder,
+[data-theme='dark'] .schedule-event.reminder,
+[data-theme='dark'] .event-card.purple { background: #3d304a; }
+[data-theme='dark'] .event-card.blue { background: #253c49; }
+[data-theme='dark'] .event-card.gray { background: var(--dark-raised); }
+[data-theme='dark'] .schedule-event span,
+[data-theme='dark'] .schedule-event small,
+[data-theme='dark'] .event-card span { color: var(--dark-muted); }
+
+[data-theme='dark'] .timetable-session { background: var(--dark-surface); color: var(--dark-text); }
+[data-theme='dark'] .priority-tag.high,
+[data-theme='dark'] .task-meta .important-tag { background: #493128; color: #ffc09a; }
+[data-theme='dark'] .priority-tag.medium { background: #443b27; color: #e5c97c; }
+[data-theme='dark'] .priority-tag.low { background: #29383e; color: #a9d0de; }
+[data-theme='dark'] button.timetable-session:hover,
+[data-theme='dark'] .course-time-row:hover { background: var(--dark-hover); }
+[data-theme='dark'] .finance-kpi.primary { background: #392b26; border-color: #5c4035; }
+[data-theme='dark'] .transaction-icon.income { background: #254233; }
+[data-theme='dark'] .transaction-icon.expense { background: #493128; }
+[data-theme='dark'] .note-properties,
+[data-theme='dark'] .note-block.is-indented { border-color: var(--dark-border); }
+[data-theme='dark'] .block-controls { background: var(--dark-surface); border-color: var(--dark-border); }
+[data-theme='dark'] .assistant-trigger { background: var(--dark-raised); border-color: var(--dark-border); }
+[data-theme='dark'] .assistant-trigger-dot { border-color: var(--dark-raised); }
+[data-theme='dark'] .assistant-sprite-fallback { background: var(--dark-text); color: var(--dark-bg); }
+[data-theme='dark'] .auth-screen { background: var(--dark-bg); }
+[data-theme='dark'] .auth-card p,
+[data-theme='dark'] .auth-hint { color: var(--dark-muted); }
+[data-theme='dark'] .auth-error { background: #492d2d; color: #ffb0a7; }

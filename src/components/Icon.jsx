@@ -10,6 +10,7 @@ export default function Icon({ name, size = 16 }) {
     bell: <><path d="M18 8a6 6 0 0 0-12 0c0 7-3 8-3 9h18c0-1-3-2-3-9M10 21h4" /></>,
     user: <><circle cx="12" cy="12" r="10" /><circle cx="12" cy="9" r="3" /><path d="M6.5 19c.7-3 2.7-4.5 5.5-4.5s4.8 1.5 5.5 4.5" /></>,
     sun: <><circle cx="12" cy="12" r="4" /><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41m11.32 11.32 1.41 1.41M2 12h2m16 0h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" /></>,
+    moon: <path d="M20.5 14.5A8.5 8.5 0 0 1 9.5 3.5 8.5 8.5 0 1 0 20.5 14.5Z" />,
     document: <><path d="M6 3h9l4 4v14H6zM15 3v5h4" /></>,
     rocket: <><path d="M4 14c1-5 5-9 15-10-1 10-5 14-10 15zM13 7l4 4M4 14l-2 5 5-2M9 19l-2 3" /><circle cx="14" cy="10" r="1" /></>,
     plus: <path d="M12 5v14M5 12h14" />,

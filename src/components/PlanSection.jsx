@@ -1,5 +1,38 @@
 import Icon from './Icon.jsx'
 
 export default function PlanSection({ title, icon, items, onToggle, onDelete }) {
-  return <section className="plan-section"><div className="section-heading"><h2><Icon name={icon} size={15} />{title}</h2><span>{items.filter(item => item.done).length} / {items.length}</span></div><div className="section-items">{items.length ? items.map(item => <div className="plan-item-row" key={item.id}><label className={`plan-item ${item.done ? 'is-done' : ''}`}><input type="checkbox" checked={!!item.done} disabled={!onToggle} onChange={() => onToggle?.(item)} /><span className="custom-check" /><span className="item-title">{item.title}</span>{item.detail && <span className={item.accent ? 'item-detail accent' : 'item-detail'}>{item.detail}</span>}</label>{onDelete && <button type="button" className="routine-delete" aria-label={`Delete ${item.title}`} onClick={() => onDelete(item)}><Icon name="trash" size={12} /></button>}</div>) : <p className="section-empty">Nothing planned here yet.</p>}</div></section>
+  const completedCount = items.filter(item => item.done).length
+
+  return (
+    <section className="plan-section">
+      <div className="section-heading">
+        <h2><Icon name={icon} size={15} />{title}</h2>
+        <span>{completedCount} / {items.length}</span>
+      </div>
+      <div className="section-items">
+        {items.length === 0 && <p className="section-empty">Nothing planned here yet.</p>}
+        {items.map(item => (
+          <div className="plan-item-row" key={item.id}>
+            <label className={`plan-item ${item.done ? 'is-done' : ''}`}>
+              <input type="checkbox" checked={!!item.done} disabled={!onToggle}
+                onChange={() => onToggle?.(item)} />
+              <span className="custom-check" />
+              <span className="item-title">{item.title}</span>
+              {item.detail && (
+                <span className={item.accent ? 'item-detail accent' : 'item-detail'}>
+                  {item.detail}
+                </span>
+              )}
+            </label>
+            {onDelete && (
+              <button type="button" className="routine-delete"
+                aria-label={`Delete ${item.title}`} onClick={() => onDelete(item)}>
+                <Icon name="trash" size={12} />
+              </button>
+            )}
+          </div>
+        ))}
+      </div>
+    </section>
+  )
 }

@@ -3,7 +3,9 @@ import Icon from './Icon.jsx'
 
 const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
 const colors = ['orange', 'blue', 'green', 'purple']
-const newSlot = () => ({ day: 1, start: '09:00', end: '10:00', room: '' })
+function newSlot() {
+  return { day: 1, start: '09:00', end: '10:00', room: '' }
+}
 
 export default function CourseEditor({ course, onSave, onDelete, onClose }) {
   const [form, setForm] = useState({
@@ -17,11 +19,25 @@ export default function CourseEditor({ course, onSave, onDelete, onClose }) {
   })
   const [error, setError] = useState('')
 
-  const change = (key, value) => setForm(current => ({ ...current, [key]: value }))
-  const updateSlot = (index, patch) => setForm(current => ({
-    ...current,
-    schedule: current.schedule.map((slot, i) => i === index ? { ...slot, ...patch } : slot),
-  }))
+  function change(key, value) {
+    setForm(current => ({ ...current, [key]: value }))
+  }
+
+  function updateSlot(index, patch) {
+    setForm(current => ({
+      ...current,
+      schedule: current.schedule.map((slot, position) =>
+        position === index ? { ...slot, ...patch } : slot),
+    }))
+  }
+
+  function addSlot() {
+    change('schedule', [...form.schedule, newSlot()])
+  }
+
+  function removeSlot(index) {
+    change('schedule', form.schedule.filter((_, position) => position !== index))
+  }
 
   function submit(event) {
     event.preventDefault()
@@ -36,7 +52,8 @@ export default function CourseEditor({ course, onSave, onDelete, onClose }) {
     onSave(form)
   }
 
-  return <div className="modal-backdrop" role="presentation" onMouseDown={event => { if (event.target === event.currentTarget) onClose() }}>
+  return <div className="modal-backdrop" role="presentation"
+    onMouseDown={event => { if (event.target === event.currentTarget) onClose() }}>
     <form className="editor-modal course-editor-modal" role="dialog" aria-modal="true" aria-label={course ? 'Edit course' : 'Create course'} onSubmit={submit}>
       <div className="modal-top">
         <h2>{course ? 'Edit course' : 'New course'}</h2>
@@ -57,10 +74,19 @@ export default function CourseEditor({ course, onSave, onDelete, onClose }) {
         <p className="course-editor-hint">Leave either date empty if the schedule has no start or end yet.</p>
       </div>
       <div className="course-editor-section">
-        <div className="course-editor-section-heading"><strong>Weekly class times</strong><button type="button" className="text-button" onClick={() => change('schedule', [...form.schedule, newSlot()])}>+ Add class time</button></div>
+        <div className="course-editor-section-heading">
+          <strong>Weekly class times</strong>
+          <button type="button" className="text-button" onClick={addSlot}>
+            + Add class time
+          </button>
+        </div>
         <p className="course-editor-hint">Choose the day, start and end time for each class. These repeat every week.</p>
         {form.schedule.map((slot, index) => <div className="course-slot-card" key={index}>
-          <div className="course-slot-card-heading"><strong>Class time {index + 1}</strong><button type="button" className="course-slot-remove" onClick={() => change('schedule', form.schedule.filter((_, i) => i !== index))}>Remove</button></div>
+          <div className="course-slot-card-heading">
+            <strong>Class time {index + 1}</strong>
+            <button type="button" className="course-slot-remove"
+              onClick={() => removeSlot(index)}>Remove</button>
+          </div>
           <div className="course-slot-fields">
             <label>Day<select value={slot.day} onChange={event => updateSlot(index, { day: Number(event.target.value) })}>{days.map((day, i) => <option key={day} value={i}>{day}</option>)}</select></label>
             <label>Starts<input type="time" required value={slot.start} onChange={event => updateSlot(index, { start: event.target.value })} /></label>

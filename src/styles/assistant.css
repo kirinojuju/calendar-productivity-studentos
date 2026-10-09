@@ -71,16 +71,41 @@
 }
 
 @keyframes kaito-idle {
-  0%, 54%, 100% { transform: translateY(0); }
-  58%, 64% { transform: translateY(-3px); }
-  68% { transform: translateY(-1px); }
+
+  0%,
+  54%,
+  100% {
+    transform: translateY(0);
+  }
+
+  58%,
+  64% {
+    transform: translateY(-3px);
+  }
+
+  68% {
+    transform: translateY(-1px);
+  }
 }
 
 @keyframes kaito-walk {
-  0%, 100% { transform: translate(-4px, 0); }
-  25% { transform: translate(-1px, -3px); }
-  50% { transform: translate(3px, 0); }
-  75% { transform: translate(1px, -3px); }
+
+  0%,
+  100% {
+    transform: translate(-4px, 0);
+  }
+
+  25% {
+    transform: translate(-1px, -3px);
+  }
+
+  50% {
+    transform: translate(3px, 0);
+  }
+
+  75% {
+    transform: translate(1px, -3px);
+  }
 }
 
 .assistant-trigger-dot {
@@ -113,30 +138,128 @@
   border-bottom: 1px solid #ececea;
 }
 
-.assistant-panel-heading div { display: grid; gap: 2px; }
-.assistant-panel-heading strong { font-size: 15px; }
-.assistant-panel-heading span { font-size: 12px; color: #787774; }
-.assistant-close { border: 0; background: transparent; color: #9b9a97; font-size: 22px; line-height: 1; padding: 0 2px; }
-.assistant-close:hover { color: #37352f; }
-.assistant-panel-body { padding: 16px 17px 17px; }
-.assistant-eyebrow { margin: 0 0 12px; font-size: 10px; font-weight: 700; letter-spacing: .1em; color: #a09d98; }
-.assistant-summary { display: grid; gap: 3px; padding: 10px 0; border-top: 1px solid #f0f0ef; }
-.assistant-summary span { font-size: 12px; color: #787774; }
-.assistant-summary strong { font-size: 14px; font-weight: 600; }
-.assistant-summary small { font-size: 12px; color: #787774; }
-.assistant-links { display: flex; gap: 8px; margin-top: 13px; }
-.assistant-links a { padding: 7px 10px; border: 1px solid #e9e9e7; border-radius: 7px; color: #37352f; font-size: 12px; text-decoration: none; }
-.assistant-links a:hover { background: #f7f7f5; }
-.assistant-ai-note { margin: 16px 0 0; font-size: 11px; color: #9b9a97; }
-.assistant-motion { display: block; margin-top: 9px; padding: 0; border: 0; background: transparent; color: #787774; font-size: 11px; text-decoration: underline; text-underline-offset: 2px; }
-.assistant-motion:hover { color: #37352f; }
+.assistant-panel-heading div {
+  display: grid;
+  gap: 2px;
+}
+
+.assistant-panel-heading strong {
+  font-size: 15px;
+}
+
+.assistant-panel-heading span {
+  font-size: 12px;
+  color: #787774;
+}
+
+.assistant-close {
+  border: 0;
+  background: transparent;
+  color: #9b9a97;
+  font-size: 22px;
+  line-height: 1;
+  padding: 0 2px;
+}
+
+.assistant-close:hover {
+  color: #37352f;
+}
+
+.assistant-panel-body {
+  padding: 16px 17px 17px;
+}
+
+.assistant-eyebrow {
+  margin: 0 0 12px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .1em;
+  color: #a09d98;
+}
+
+.assistant-summary {
+  display: grid;
+  gap: 3px;
+  padding: 10px 0;
+  border-top: 1px solid #f0f0ef;
+}
+
+.assistant-summary span {
+  font-size: 12px;
+  color: #787774;
+}
+
+.assistant-summary strong {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.assistant-summary small {
+  font-size: 12px;
+  color: #787774;
+}
+
+.assistant-links {
+  display: flex;
+  gap: 8px;
+  margin-top: 13px;
+}
+
+.assistant-links a {
+  padding: 7px 10px;
+  border: 1px solid #e9e9e7;
+  border-radius: 7px;
+  color: #37352f;
+  font-size: 12px;
+  text-decoration: none;
+}
+
+.assistant-links a:hover {
+  background: #f7f7f5;
+}
+
+.assistant-ai-note {
+  margin: 16px 0 0;
+  font-size: 11px;
+  color: #9b9a97;
+}
+
+.assistant-motion {
+  display: block;
+  margin-top: 9px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #787774;
+  font-size: 11px;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.assistant-motion:hover {
+  color: #37352f;
+}
 
 @media (max-width: 560px) {
-  .assistant-widget { right: 16px; bottom: 16px; }
-  .assistant-trigger { width: 68px; height: 68px; border-radius: 21px; }
-  .assistant-panel { max-height: calc(100vh - 112px); overflow-y: auto; }
+  .assistant-widget {
+    right: 16px;
+    bottom: 16px;
+  }
+
+  .assistant-trigger {
+    width: 68px;
+    height: 68px;
+    border-radius: 21px;
+  }
+
+  .assistant-panel {
+    max-height: calc(100vh - 112px);
+    overflow-y: auto;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .assistant-trigger { transition: none; }
+  .assistant-trigger {
+    transition: none;
+  }
 }
